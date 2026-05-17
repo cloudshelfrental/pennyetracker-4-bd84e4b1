@@ -335,6 +335,7 @@ export function GraphCanvas({ cfg }: { cfg: GraphConfig }) {
         onCreate={(payload) => createNode.mutate(payload)}
         onConnect={(targetId, direction) => addConnection.mutate({ targetId, direction })}
         pending={createNode.isPending || addConnection.isPending}
+        lockedParentId={cfg.parentFilter?.value}
       />
     </div>
   );
