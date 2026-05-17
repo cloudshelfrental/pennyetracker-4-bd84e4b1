@@ -342,7 +342,7 @@ export function GraphCanvas({ cfg }: { cfg: GraphConfig }) {
 }
 
 function NodeDialog({
-  open, onClose, kind, dir, cfg, existing, excludeIds, onCreate, onConnect, pending,
+  open, onClose, kind, dir, cfg, existing, excludeIds, onCreate, onConnect, pending, lockedParentId,
 }: {
   open: boolean;
   onClose: () => void;
@@ -354,9 +354,10 @@ function NodeDialog({
   onCreate: (p: { name: string; parentId: string; direction?: Direction }) => void;
   onConnect: (targetId: string, direction: Direction) => void;
   pending: boolean;
+  lockedParentId?: string;
 }) {
   const [name, setName] = useState("");
-  const [parentId, setParentId] = useState("");
+  const [parentId, setParentId] = useState(lockedParentId ?? "");
   const [pickId, setPickId] = useState("");
   const [pickSearch, setPickSearch] = useState("");
 
