@@ -297,10 +297,11 @@ export function GraphCanvas({ cfg }: { cfg: GraphConfig }) {
             </div>
           )}
         </div>
-        <Button onClick={() => setDialog({ kind: "create" })}>
-          <Plus className="h-4 w-4" /> New {cfg.label}
-        </Button>
-      </Card>
+        {!cfg.readOnly && (
+          <Button onClick={() => setDialog({ kind: "create" })}>
+            <Plus className="h-4 w-4" /> New {cfg.label}
+          </Button>
+        )}
 
       {/* Canvas */}
       <Card className="relative flex-1 overflow-hidden">
