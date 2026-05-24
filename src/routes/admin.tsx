@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { LayoutDashboard, Users, MapPin, Map as MapIcon, Settings, ShieldCheck, LogOut, Menu } from "lucide-react";
+import { LayoutDashboard, Users, MapPin, Map as MapIcon, Settings, ShieldCheck, LogOut, Menu, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin")({
@@ -89,7 +89,12 @@ function AdminLayout() {
     <div className="flex min-h-screen bg-muted/30">
       <aside className="hidden w-64 shrink-0 flex-col border-r bg-card md:flex">
         <div className="px-6 py-5">
-          <Link to="/landing" className="text-lg font-semibold tracking-tight">Penny-eTracker</Link>
+          <div className="flex items-center justify-between">
+            <Link to="/landing" className="text-lg font-semibold tracking-tight">Penny-eTracker</Link>
+            <Link to="/" className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent" aria-label="Home">
+              <Home className="h-4 w-4" />
+            </Link>
+          </div>
           <p className="mt-1 text-xs text-muted-foreground">Admin Panel</p>
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -118,7 +123,12 @@ function AdminLayout() {
             </Sheet>
             <Link to="/landing" className="font-semibold">Penny-eTracker</Link>
           </div>
-          <Button onClick={signOut} variant="ghost" size="icon" aria-label="Sign out"><LogOut className="h-4 w-4" /></Button>
+          <div className="flex items-center gap-1">
+            <Link to="/" className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent" aria-label="Home">
+              <Home className="h-4 w-4" />
+            </Link>
+            <Button onClick={signOut} variant="ghost" size="icon" aria-label="Sign out"><LogOut className="h-4 w-4" /></Button>
+          </div>
         </header>
         <div className="mx-auto w-full max-w-6xl p-4 sm:p-6">
           <Outlet />
