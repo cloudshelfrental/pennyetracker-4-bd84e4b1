@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { MapPin, Locate, Save, X, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useGoogleMaps } from "./useGoogleMaps";
-import { FallbackPicker } from "./FallbackPicker";
+import { LeafletMap, type LeafletMarker } from "./LeafletMap";
 import { loadCachedPoints, saveCachedPoints, upsertCachedPoint, type GeoPoint } from "@/lib/geoCache";
 
 type Kind = "panchayath" | "ward";
@@ -223,31 +223,22 @@ export function MapPicker({ kind, apiKey, parents, parentId, onParentChange, par
     [visible, filter],
   );
 
-  if (!apiKey) {
-    return (
-      <FallbackPicker
-        kind={kind}
-        parents={parents}
-        parentId={parentId}
-        onParentChange={onParentChange}
-        parentLabel={parentLabel}
-        reason="Google Maps API key is not configured. Ask an admin to set it in Settings, or use the GPS fallback below."
-      />
-    );
-  }
+  // Fallback to Leaflet/OpenStreetMap if no Google Maps key or it failed.
+  const useLeaflet = !apiKey || mapState === "error";
 
-  if (mapState === "error") {
-    return (
-      <FallbackPicker
-        kind={kind}
-        parents={parents}
-        parentId={parentId}
-        onParentChange={onParentChange}
-        parentLabel={parentLabel}
-        reason="Google Maps failed to load (invalid key, API disabled, or network blocked). Falling back to browser GPS."
-      />
-    );
-  }
+  const leafletMarkers: LeafletMarker[] = useLeaflet
+    ? visible
+        .filter((p) => p.lat != null && p.lng != null)
+        .map((p) => ({
+          id: p.id,
+          name: p.name,
+          lat: p.lat as number,
+          lng: p.lng as number,
+          label: p.ward_number ?? null,
+        }))
+    : [];
+
+
 
   return (
     <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
