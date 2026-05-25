@@ -42,7 +42,7 @@ function StaffLoginPage() {
       if (list.includes("admin") || list.includes("super_admin")) {
         navigate({ to: "/landing" });
       } else if (list.includes("delivery")) {
-        navigate({ to: "/delivery-partners" });
+        navigate({ to: "/delivery/dashboard" });
       } else {
         navigate({ to: "/staff/pending" });
       }

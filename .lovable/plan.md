@@ -1,37 +1,68 @@
-# Hybrid map provider: OpenStreetMap by default, Google Maps if key is set
+## Goal
 
-## Why
-Your custom domain `pennyekart.com` is not on the Lovable Google Maps key's allowlist, so Google Maps shows "Oops! Something went wrong." OpenStreetMap (via Leaflet) needs no API key and works on any domain. We'll use it as the default, and keep Google Maps as an optional upgrade for whoever later adds their own key.
+After staff login, route delivery staff to a new Delivery Partner Dashboard. Admin/super_admin behavior stays unchanged.
 
-## What changes (UI)
+## 1. Login routing fix (`src/routes/staff.login.tsx`)
 
-- **Public map pages** (`/map/panchayath`, `/map/ward`): render a Leaflet map with OSM tiles by default. If a Google Maps key is configured AND it loads successfully, use Google instead. If Google fails (wrong domain, quota, offline), automatically fall back to Leaflet — no more error screen.
-- **Update Location pages** (`/update-location/panchayath`, `/update-location/ward`): the pin-on-map picker uses Leaflet by default — click anywhere on the map to drop a pin, or tap "Use my GPS". Google Maps version stays available when key works.
-- **Admin mapping pages** (`/admin/mapping/panchayath`, `/admin/mapping/ward`): same hybrid behavior in `MapPicker`.
-- **Offline `.mbtiles` map** still wins when uploaded — unchanged.
+Current code already routes admin → `/landing`, delivery → `/delivery-partners`, pending → `/staff/pending`. Change the `delivery` branch to navigate to the new `/delivery/dashboard` route instead of the public partners directory.
 
-## What stays the same
+No change for admin/super_admin.
 
-- All data, RLS, GPS capture, "Use my location", marker popups, save flow.
-- The `app_settings.google_maps_api_key` field still works — admins who want Google Maps just paste a domain-allowlisted key.
-- The existing fallback list view (links to Google Maps / OSM) is no longer needed because Leaflet now always renders.
+## 2. New route: `/delivery/dashboard`
 
-## Technical details
+File: `src/routes/delivery.dashboard.tsx` (protected — redirect to `/staff/login` if not signed in or not a `delivery` role).
 
-1. Add `leaflet` + `react-leaflet` (`bun add leaflet react-leaflet @types/leaflet`).
-2. Create `src/components/map/LeafletMap.tsx` — generic component with props `{ markers, center, onPick?, height }`. Uses OSM tile URL `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png` with proper attribution. Click handler invokes `onPick(lat, lng)` for picker mode.
-3. Update `src/components/map/MapPicker.tsx`:
-   - Try Google Maps first when `apiKey` present.
-   - On `useGoogleMaps` returning `"error"` OR no key, render `LeafletMap` in picker mode instead of the current `FallbackPicker`.
-   - GPS button + parent dropdown + save logic unchanged.
-4. Update `src/routes/map.panchayath.tsx` and `src/routes/map.ward.tsx`:
-   - Replace the "Card with error message + list" fallback branch with `<LeafletMap markers={visible} />`.
-   - Offline mbtiles path unchanged (still preferred when uploaded and offline).
-5. Leaflet CSS: import `leaflet/dist/leaflet.css` once in `src/styles.css` or at the top of `LeafletMap.tsx`. Fix the default marker icon path issue (well-known Leaflet+bundler quirk) inside `LeafletMap.tsx`.
-6. No database changes. No new secrets. No edge functions.
+Loads the current user's `delivery_staff` row (by `user_id`) and renders the dashboard.
+
+### Dashboard sections
+
+1. **Profile card**
+   - Name, phone, alt phone, email
+   - Assigned panchayath(s) — from `delivery_staff_panchayaths` join `panchayaths`
+   - Assigned ward(s) — from `delivery_staff_wards` join `wards` (name + ward_number)
+   - Address
+   - Location: lat/lng with "Update my location" button (uses browser geolocation → updates `delivery_staff.latitude/longitude/location_updated_at`)
+   - Small embedded Google Map showing the saved point (uses existing `useGoogleMapsKey` hook + `LeafletMap`/Google JS API already in project)
+
+2. **Stats row (4 cards)**
+   - **Pending orders** — count from `delivery_orders` where `staff_id = me` AND `status = 'pending'`
+   - **Delivered orders** — count where `status = 'delivered'`
+   - **Collected cash** — sum of `amount` on delivered orders where `cash_submission_id IS NULL` (held by staff)
+   - **Wallet balance** — sum of `wallet_transactions.amount` (credit positive, debit negative) for this staff
+
+3. **Submitted cash card**
+   - Total of `cash_submissions.amount` for this staff
+   - Recent 5 submissions list (date, amount, verified status)
+
+4. **Pending orders list**
+   - Table: order_number, customer_name, phone, address, amount, "Mark delivered" button
+   - Mark delivered → update row `status='delivered'`, `delivered_at=now()` (allowed by existing "Staff update own orders" RLS)
+
+5. **Delivered orders list (recent 10)**
+   - order_number, customer, amount, delivered_at, cash submitted? badge
+
+### Sign out button in header.
+
+## 3. Data access
+
+All reads/writes go through the browser Supabase client. Existing RLS already supports:
+- staff self-select on `delivery_staff`, `delivery_staff_wards`, `delivery_staff_panchayaths`
+- staff select/update on own `delivery_orders`
+- staff select on own `cash_submissions` and `wallet_transactions`
+
+No DB migration needed.
+
+## 4. Guard
+
+Use `useAuth()` from `src/hooks/use-auth.tsx`: if `loading` show spinner; if no user → redirect `/staff/login`; if user but roles include `admin`/`super_admin` → redirect `/landing`; if roles include `delivery` → render; if only `pending` → redirect `/staff/pending`.
+
+## Files touched
+
+- `src/routes/staff.login.tsx` — change one navigate target
+- `src/routes/delivery.dashboard.tsx` — new
+- (optional) small helpers in `src/lib/` for queries — kept inline for now
 
 ## Out of scope
 
-- Setting up a Google Cloud project / billing / your own API key (you can still do this anytime in Admin → Settings to upgrade tile quality).
-- Changing the offline `.mbtiles` flow.
-- Auth or role changes.
+- No changes to admin flows, landing page, or `/delivery-partners` directory page
+- No new tables, no schema changes
