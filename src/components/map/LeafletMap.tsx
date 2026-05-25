@@ -94,6 +94,9 @@ export function LeafletMap({
   focus,
   fitToMarkers = true,
 }: Props) {
+  if (typeof window === "undefined") {
+    return <div style={{ height, width: "100%" }} className="rounded-md bg-muted" />;
+  }
   const initialCenter = useMemo(
     () => center ?? (markers[0] ? { lat: markers[0].lat, lng: markers[0].lng } : DEFAULT_CENTER),
     // eslint-disable-next-line react-hooks/exhaustive-deps
