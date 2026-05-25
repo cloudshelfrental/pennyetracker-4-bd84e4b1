@@ -1,60 +1,101 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Card } from "@/components/ui/card";
-import { MapPinned, Grid3x3, ChevronRight } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
+import { LeafletMap, type LeafletMarker } from "@/components/map/LeafletMap";
 
 export const Route = createFileRoute("/marking/")({
-  component: MarkingHub,
-  head: () => ({ meta: [{ title: "Marking — Penny-eTracker" }] }),
+  component: MarkingView,
+  head: () => ({ meta: [{ title: "Marking — Pinned Locations" }] }),
 });
 
-const items = [
-  {
-    to: "/marking/panchayath" as const,
-    title: "Panchayath Marking",
-    desc: "Map panchayaths and their N/S/E/W neighbours",
-    icon: MapPinned,
-    gradient: "from-[oklch(0.55_0.2_260)] to-[oklch(0.65_0.22_290)]",
-  },
-  {
-    to: "/marking/ward" as const,
-    title: "Ward Marking",
-    desc: "Map wards and their N/S/E/W neighbours",
-    icon: Grid3x3,
-    gradient: "from-[oklch(0.6_0.2_30)] to-[oklch(0.7_0.2_60)]",
-  },
-];
+function MarkingView() {
+  const [show, setShow] = useState<{ panchayath: boolean; ward: boolean }>({
+    panchayath: true,
+    ward: true,
+  });
 
-function MarkingHub() {
+  const { data: panchayaths = [] } = useQuery({
+    queryKey: ["marking", "panchayaths-pinned"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("panchayaths")
+        .select("id, name, latitude, longitude")
+        .not("latitude", "is", null)
+        .not("longitude", "is", null);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: wards = [] } = useQuery({
+    queryKey: ["marking", "wards-pinned"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("wards")
+        .select("id, name, ward_number, latitude, longitude")
+        .not("latitude", "is", null)
+        .not("longitude", "is", null);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const markers: LeafletMarker[] = useMemo(() => {
+    const m: LeafletMarker[] = [];
+    if (show.panchayath) {
+      for (const p of panchayaths) {
+        m.push({ id: `p-${p.id}`, name: p.name, lat: p.latitude!, lng: p.longitude! });
+      }
+    }
+    if (show.ward) {
+      for (const w of wards) {
+        m.push({
+          id: `w-${w.id}`,
+          name: w.name,
+          lat: w.latitude!,
+          lng: w.longitude!,
+          label: w.ward_number ?? null,
+        });
+      }
+    }
+    return m;
+  }, [panchayaths, wards, show]);
+
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Marking</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Visualise and connect panchayaths and wards on a directional graph.
-        </p>
+    <main className="mx-auto max-w-7xl px-4 py-6">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Pinned Locations</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Read-only view of saved panchayath and ward locations.
+          </p>
+        </div>
+        <div className="flex items-center gap-4 text-sm">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={show.panchayath}
+              onChange={(e) => setShow((s) => ({ ...s, panchayath: e.target.checked }))}
+            />
+            Panchayaths ({panchayaths.length})
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={show.ward}
+              onChange={(e) => setShow((s) => ({ ...s, ward: e.target.checked }))}
+            />
+            Wards ({wards.length})
+          </label>
+        </div>
       </div>
-      <div className="grid gap-5 sm:grid-cols-2">
-        {items.map(({ to, title, desc, icon: Icon, gradient }) => (
-          <Link key={to} to={to}>
-            <Card
-              className={`group relative h-44 overflow-hidden border-0 bg-gradient-to-br ${gradient} p-6 text-white shadow-lg transition-all hover:-translate-y-1 hover:shadow-2xl`}
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,oklch(1_0_0/0.25),transparent_60%)]" />
-              <div className="relative flex h-full flex-col justify-between">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-transform group-hover:scale-110">
-                  <Icon className="h-6 w-6" />
-                </div>
-                <div>
-                  <h2 className="flex items-center gap-2 text-xl font-semibold tracking-tight">
-                    {title} <ChevronRight className="h-5 w-5 opacity-0 transition-opacity group-hover:opacity-100" />
-                  </h2>
-                  <p className="mt-1 text-sm text-white/80">{desc}</p>
-                </div>
-              </div>
-            </Card>
-          </Link>
-        ))}
-      </div>
+      <Card className="overflow-hidden">
+        <CardContent className="p-0">
+          <LeafletMap markers={markers} height="75vh" fitToMarkers />
+        </CardContent>
+      </Card>
     </main>
   );
 }
