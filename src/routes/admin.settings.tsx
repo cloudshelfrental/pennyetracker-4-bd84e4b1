@@ -6,8 +6,13 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter,
+  DialogHeader, DialogTitle, DialogTrigger,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Save, ExternalLink, Upload, Trash2, MapIcon } from "lucide-react";
+import { Save, ExternalLink, Upload, Trash2, MapIcon, Plus, Globe, Pencil, Check, X } from "lucide-react";
 import { GOOGLE_MAPS_KEY_NAME, useGoogleMapsKey } from "@/hooks/use-google-maps-key";
 import { useQuery } from "@tanstack/react-query";
 import { clearCachedMbtiles } from "@/lib/mbtilesCache";
@@ -97,6 +102,7 @@ function SettingsPage() {
         </CardContent>
       </Card>
       <OfflineMbtilesCard />
+      <ExternalSitesCard />
     </div>
   );
 }

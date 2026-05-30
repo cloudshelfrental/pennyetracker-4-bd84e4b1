@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UpdateLocationIndexRouteImport } from './routes/update-location.index'
+import { Route as OrdersIndexRouteImport } from './routes/orders.index'
 import { Route as MarkingIndexRouteImport } from './routes/marking.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UpdateLocationWardRouteImport } from './routes/update-location.ward'
@@ -64,6 +65,11 @@ const IndexRoute = IndexRouteImport.update({
 const UpdateLocationIndexRoute = UpdateLocationIndexRouteImport.update({
   id: '/update-location/',
   path: '/update-location/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersIndexRoute = OrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarkingIndexRoute = MarkingIndexRouteImport.update({
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/update-location/ward': typeof UpdateLocationWardRoute
   '/admin/': typeof AdminIndexRoute
   '/marking/': typeof MarkingIndexRoute
+  '/orders/': typeof OrdersIndexRoute
   '/update-location/': typeof UpdateLocationIndexRoute
   '/admin/mapping/panchayath': typeof AdminMappingPanchayathRoute
   '/admin/mapping/ward': typeof AdminMappingWardRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/update-location/ward': typeof UpdateLocationWardRoute
   '/admin': typeof AdminIndexRoute
   '/marking': typeof MarkingIndexRoute
+  '/orders': typeof OrdersIndexRoute
   '/update-location': typeof UpdateLocationIndexRoute
   '/admin/mapping/panchayath': typeof AdminMappingPanchayathRoute
   '/admin/mapping/ward': typeof AdminMappingWardRoute
@@ -246,6 +254,7 @@ export interface FileRoutesById {
   '/update-location/ward': typeof UpdateLocationWardRoute
   '/admin/': typeof AdminIndexRoute
   '/marking/': typeof MarkingIndexRoute
+  '/orders/': typeof OrdersIndexRoute
   '/update-location/': typeof UpdateLocationIndexRoute
   '/admin/mapping/panchayath': typeof AdminMappingPanchayathRoute
   '/admin/mapping/ward': typeof AdminMappingWardRoute
@@ -276,6 +285,7 @@ export interface FileRouteTypes {
     | '/update-location/ward'
     | '/admin/'
     | '/marking/'
+    | '/orders/'
     | '/update-location/'
     | '/admin/mapping/panchayath'
     | '/admin/mapping/ward'
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/update-location/ward'
     | '/admin'
     | '/marking'
+    | '/orders'
     | '/update-location'
     | '/admin/mapping/panchayath'
     | '/admin/mapping/ward'
@@ -330,6 +341,7 @@ export interface FileRouteTypes {
     | '/update-location/ward'
     | '/admin/'
     | '/marking/'
+    | '/orders/'
     | '/update-location/'
     | '/admin/mapping/panchayath'
     | '/admin/mapping/ward'
@@ -352,6 +364,7 @@ export interface RootRouteChildren {
   UpdateLocationPanchayathRoute: typeof UpdateLocationPanchayathRoute
   UpdateLocationWardRoute: typeof UpdateLocationWardRoute
   MarkingIndexRoute: typeof MarkingIndexRoute
+  OrdersIndexRoute: typeof OrdersIndexRoute
   UpdateLocationIndexRoute: typeof UpdateLocationIndexRoute
 }
 
@@ -397,6 +410,13 @@ declare module '@tanstack/react-router' {
       path: '/update-location'
       fullPath: '/update-location/'
       preLoaderRoute: typeof UpdateLocationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/': {
+      id: '/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof OrdersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marking/': {
@@ -596,6 +616,7 @@ const rootRouteChildren: RootRouteChildren = {
   UpdateLocationPanchayathRoute: UpdateLocationPanchayathRoute,
   UpdateLocationWardRoute: UpdateLocationWardRoute,
   MarkingIndexRoute: MarkingIndexRoute,
+  OrdersIndexRoute: OrdersIndexRoute,
   UpdateLocationIndexRoute: UpdateLocationIndexRoute,
 }
 export const routeTree = rootRouteImport
