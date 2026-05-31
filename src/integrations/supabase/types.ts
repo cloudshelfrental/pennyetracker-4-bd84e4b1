@@ -404,6 +404,45 @@ export type Database = {
           },
         ]
       }
+      pickup_points: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: string
+          latitude: number | null
+          location_updated_at: string | null
+          longitude: number | null
+          name: string
+          panchayath_id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          location_updated_at?: string | null
+          longitude?: number | null
+          name: string
+          panchayath_id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          location_updated_at?: string | null
+          longitude?: number | null
+          name?: string
+          panchayath_id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -591,6 +630,7 @@ export type Database = {
       get_public_delivery_partners: { Args: never; Returns: Json }
       get_public_google_maps_key: { Args: never; Returns: string }
       get_public_offline_mbtiles_meta: { Args: never; Returns: string }
+      get_public_pickup_points: { Args: never; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
