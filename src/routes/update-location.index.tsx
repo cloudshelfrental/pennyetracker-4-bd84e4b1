@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPinned, Grid3x3, ChevronRight, ArrowLeft } from "lucide-react";
+import { MapPinned, Grid3x3, ChevronRight, ArrowLeft, Package } from "lucide-react";
 
 export const Route = createFileRoute("/update-location/")({
   component: UpdateLocationHub,
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/update-location/")({
       { title: "Update Location — Penny-eTracker" },
       {
         name: "description",
-        content: "Update GPS location for panchayaths and wards using map pin or device GPS.",
+        content: "Update GPS location for panchayaths, wards, and pickup points using map pin or device GPS.",
       },
     ],
   }),
@@ -30,6 +30,13 @@ const items = [
     desc: "Pick a panchayath, choose a ward, then capture its GPS location.",
     icon: Grid3x3,
     gradient: "from-[oklch(0.6_0.2_30)] to-[oklch(0.7_0.2_60)]",
+  },
+  {
+    to: "/update-location/pickup-point" as const,
+    title: "Pickup Points",
+    desc: "Add and pin multiple pickup points under each panchayath.",
+    icon: Package,
+    gradient: "from-[oklch(0.55_0.2_150)] to-[oklch(0.65_0.2_180)]",
   },
 ];
 

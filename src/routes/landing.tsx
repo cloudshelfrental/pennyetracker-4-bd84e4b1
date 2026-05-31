@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Truck, MapPin, Navigation, MapPinned, Map as MapIcon, LogOut, Package } from "lucide-react";
+import { Truck, MapPin, Navigation, MapPinned, Map as MapIcon, LogOut, Package, PackageOpen } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/landing")({
@@ -56,6 +56,12 @@ const features = [
     title: "Orders",
     to: "/orders" as const,
     gradient: "from-[oklch(0.55_0.2_25)] via-[oklch(0.6_0.22_55)] to-[oklch(0.7_0.2_90)]",
+  },
+  {
+    icon: PackageOpen,
+    title: "Pickup Points",
+    to: "/pickup-points" as const,
+    gradient: "from-[oklch(0.55_0.2_150)] via-[oklch(0.6_0.2_175)] to-[oklch(0.65_0.2_200)]",
   },
 ];
 
