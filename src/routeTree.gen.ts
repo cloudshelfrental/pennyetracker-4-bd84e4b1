@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PickupPointsRouteImport } from './routes/pickup-points'
 import { Route as LocationTrackingRouteImport } from './routes/location-tracking'
 import { Route as LandingRouteImport } from './routes/landing'
 import { Route as DeliveryPartnersRouteImport } from './routes/delivery-partners'
@@ -20,6 +21,7 @@ import { Route as OrdersIndexRouteImport } from './routes/orders.index'
 import { Route as MarkingIndexRouteImport } from './routes/marking.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UpdateLocationWardRouteImport } from './routes/update-location.ward'
+import { Route as UpdateLocationPickupPointRouteImport } from './routes/update-location.pickup-point'
 import { Route as UpdateLocationPanchayathRouteImport } from './routes/update-location.panchayath'
 import { Route as StaffSignupRouteImport } from './routes/staff.signup'
 import { Route as StaffPendingRouteImport } from './routes/staff.pending'
@@ -38,6 +40,11 @@ import { Route as AdminMappingIndexRouteImport } from './routes/admin.mapping.in
 import { Route as AdminMappingWardRouteImport } from './routes/admin.mapping.ward'
 import { Route as AdminMappingPanchayathRouteImport } from './routes/admin.mapping.panchayath'
 
+const PickupPointsRoute = PickupPointsRouteImport.update({
+  id: '/pickup-points',
+  path: '/pickup-points',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LocationTrackingRoute = LocationTrackingRouteImport.update({
   id: '/location-tracking',
   path: '/location-tracking',
@@ -93,6 +100,12 @@ const UpdateLocationWardRoute = UpdateLocationWardRouteImport.update({
   path: '/update-location/ward',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UpdateLocationPickupPointRoute =
+  UpdateLocationPickupPointRouteImport.update({
+    id: '/update-location/pickup-point',
+    path: '/update-location/pickup-point',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const UpdateLocationPanchayathRoute =
   UpdateLocationPanchayathRouteImport.update({
     id: '/update-location/panchayath',
@@ -187,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/delivery-partners': typeof DeliveryPartnersRoute
   '/landing': typeof LandingRoute
   '/location-tracking': typeof LocationTrackingRoute
+  '/pickup-points': typeof PickupPointsRoute
   '/admin/admins': typeof AdminAdminsRoute
   '/admin/locations': typeof AdminLocationsRoute
   '/admin/mapping': typeof AdminMappingRouteWithChildren
@@ -201,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/staff/pending': typeof StaffPendingRoute
   '/staff/signup': typeof StaffSignupRoute
   '/update-location/panchayath': typeof UpdateLocationPanchayathRoute
+  '/update-location/pickup-point': typeof UpdateLocationPickupPointRoute
   '/update-location/ward': typeof UpdateLocationWardRoute
   '/admin/': typeof AdminIndexRoute
   '/marking/': typeof MarkingIndexRoute
@@ -216,6 +231,7 @@ export interface FileRoutesByTo {
   '/delivery-partners': typeof DeliveryPartnersRoute
   '/landing': typeof LandingRoute
   '/location-tracking': typeof LocationTrackingRoute
+  '/pickup-points': typeof PickupPointsRoute
   '/admin/admins': typeof AdminAdminsRoute
   '/admin/locations': typeof AdminLocationsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -229,6 +245,7 @@ export interface FileRoutesByTo {
   '/staff/pending': typeof StaffPendingRoute
   '/staff/signup': typeof StaffSignupRoute
   '/update-location/panchayath': typeof UpdateLocationPanchayathRoute
+  '/update-location/pickup-point': typeof UpdateLocationPickupPointRoute
   '/update-location/ward': typeof UpdateLocationWardRoute
   '/admin': typeof AdminIndexRoute
   '/marking': typeof MarkingIndexRoute
@@ -246,6 +263,7 @@ export interface FileRoutesById {
   '/delivery-partners': typeof DeliveryPartnersRoute
   '/landing': typeof LandingRoute
   '/location-tracking': typeof LocationTrackingRoute
+  '/pickup-points': typeof PickupPointsRoute
   '/admin/admins': typeof AdminAdminsRoute
   '/admin/locations': typeof AdminLocationsRoute
   '/admin/mapping': typeof AdminMappingRouteWithChildren
@@ -260,6 +278,7 @@ export interface FileRoutesById {
   '/staff/pending': typeof StaffPendingRoute
   '/staff/signup': typeof StaffSignupRoute
   '/update-location/panchayath': typeof UpdateLocationPanchayathRoute
+  '/update-location/pickup-point': typeof UpdateLocationPickupPointRoute
   '/update-location/ward': typeof UpdateLocationWardRoute
   '/admin/': typeof AdminIndexRoute
   '/marking/': typeof MarkingIndexRoute
@@ -278,6 +297,7 @@ export interface FileRouteTypes {
     | '/delivery-partners'
     | '/landing'
     | '/location-tracking'
+    | '/pickup-points'
     | '/admin/admins'
     | '/admin/locations'
     | '/admin/mapping'
@@ -292,6 +312,7 @@ export interface FileRouteTypes {
     | '/staff/pending'
     | '/staff/signup'
     | '/update-location/panchayath'
+    | '/update-location/pickup-point'
     | '/update-location/ward'
     | '/admin/'
     | '/marking/'
@@ -307,6 +328,7 @@ export interface FileRouteTypes {
     | '/delivery-partners'
     | '/landing'
     | '/location-tracking'
+    | '/pickup-points'
     | '/admin/admins'
     | '/admin/locations'
     | '/admin/settings'
@@ -320,6 +342,7 @@ export interface FileRouteTypes {
     | '/staff/pending'
     | '/staff/signup'
     | '/update-location/panchayath'
+    | '/update-location/pickup-point'
     | '/update-location/ward'
     | '/admin'
     | '/marking'
@@ -336,6 +359,7 @@ export interface FileRouteTypes {
     | '/delivery-partners'
     | '/landing'
     | '/location-tracking'
+    | '/pickup-points'
     | '/admin/admins'
     | '/admin/locations'
     | '/admin/mapping'
@@ -350,6 +374,7 @@ export interface FileRouteTypes {
     | '/staff/pending'
     | '/staff/signup'
     | '/update-location/panchayath'
+    | '/update-location/pickup-point'
     | '/update-location/ward'
     | '/admin/'
     | '/marking/'
@@ -367,6 +392,7 @@ export interface RootRouteChildren {
   DeliveryPartnersRoute: typeof DeliveryPartnersRoute
   LandingRoute: typeof LandingRoute
   LocationTrackingRoute: typeof LocationTrackingRoute
+  PickupPointsRoute: typeof PickupPointsRoute
   DeliveryDashboardRoute: typeof DeliveryDashboardRoute
   MapPanchayathRoute: typeof MapPanchayathRoute
   MarkingPanchayathRoute: typeof MarkingPanchayathRoute
@@ -375,6 +401,7 @@ export interface RootRouteChildren {
   StaffPendingRoute: typeof StaffPendingRoute
   StaffSignupRoute: typeof StaffSignupRoute
   UpdateLocationPanchayathRoute: typeof UpdateLocationPanchayathRoute
+  UpdateLocationPickupPointRoute: typeof UpdateLocationPickupPointRoute
   UpdateLocationWardRoute: typeof UpdateLocationWardRoute
   MarkingIndexRoute: typeof MarkingIndexRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
@@ -383,6 +410,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/pickup-points': {
+      id: '/pickup-points'
+      path: '/pickup-points'
+      fullPath: '/pickup-points'
+      preLoaderRoute: typeof PickupPointsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/location-tracking': {
       id: '/location-tracking'
       path: '/location-tracking'
@@ -458,6 +492,13 @@ declare module '@tanstack/react-router' {
       path: '/update-location/ward'
       fullPath: '/update-location/ward'
       preLoaderRoute: typeof UpdateLocationWardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/update-location/pickup-point': {
+      id: '/update-location/pickup-point'
+      path: '/update-location/pickup-point'
+      fullPath: '/update-location/pickup-point'
+      preLoaderRoute: typeof UpdateLocationPickupPointRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/update-location/panchayath': {
@@ -627,6 +668,7 @@ const rootRouteChildren: RootRouteChildren = {
   DeliveryPartnersRoute: DeliveryPartnersRoute,
   LandingRoute: LandingRoute,
   LocationTrackingRoute: LocationTrackingRoute,
+  PickupPointsRoute: PickupPointsRoute,
   DeliveryDashboardRoute: DeliveryDashboardRoute,
   MapPanchayathRoute: MapPanchayathRoute,
   MarkingPanchayathRoute: MarkingPanchayathRoute,
@@ -635,6 +677,7 @@ const rootRouteChildren: RootRouteChildren = {
   StaffPendingRoute: StaffPendingRoute,
   StaffSignupRoute: StaffSignupRoute,
   UpdateLocationPanchayathRoute: UpdateLocationPanchayathRoute,
+  UpdateLocationPickupPointRoute: UpdateLocationPickupPointRoute,
   UpdateLocationWardRoute: UpdateLocationWardRoute,
   MarkingIndexRoute: MarkingIndexRoute,
   OrdersIndexRoute: OrdersIndexRoute,
@@ -643,13 +686,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
